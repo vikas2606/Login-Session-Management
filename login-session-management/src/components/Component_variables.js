@@ -1,0 +1,6 @@
+export const Variables={
+    TIME_FOR_IDLE_POPUP:10,
+    TIME_FOR_IDLE_LOGOUT_POPUP:20,
+    TIMER_MINUTES:0,
+    TIMER_SECONDS:20,
+}

@@ -15,7 +15,7 @@ export const Logout = () => {
     dispatch(userActions.logout());
   };
   const InteractionHandler = () => {
-    console.log("triggered")
+    console.log("User is responding")
     setIsUserInteracting(true)
   };
   
