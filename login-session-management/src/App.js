@@ -4,7 +4,6 @@ import Login from "./components/login";
 import Logout from "./components/logout";
 import Clock from "./components/Clock";
 import Popup from "./components/PopUp";
-import Timer from "./components/Timer";
 import PopUpForLogOut from "./components/PopUpForLogOut";
 import { useSelector } from "react-redux";
 import { selectPopUp, selectPopUpForLogOut, selectTime, selectUser } from "./store/store";

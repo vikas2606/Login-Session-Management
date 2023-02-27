@@ -1,80 +1,82 @@
 import React, { useState, useEffect, useRef } from "react";
+
 import "./Clock.css";
+
 import { useDispatch } from "react-redux";
+
 import {
   popupActions,
   timeActions,
   popupforlogoutActions,
+  userActions,
 } from "../store/store";
+
 function Clock(props) {
+  let forward = props.forward;
+
   const dispatch = useDispatch();
-  const time = 0;
-  const [hours, setHours] = useState(time);
-  const [minutes, setMinutes] = useState(time);
-  const [seconds, setSeconds] = useState(1);
-  const count = useRef(0);
+
+  const minutes = forward ? 0 : props.minutes;
+
+  const seconds = forward ? 0 : props.seconds;
+
+  const [totalSeconds, setTotalSeconds] = useState(minutes * 60 + seconds);
+
+  const minutesRemaining = Math.floor(totalSeconds / 60);
+
+  const secondsRemaining = totalSeconds % 60;
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (!props.onChange) {
-        setSeconds((prevSeconds) => {
-          let newSeconds = prevSeconds + 1;
-          let newMinutes = minutes;
-          let newHours = hours;
-          if (newSeconds === 60) {
-            newSeconds = 0;
-            newMinutes++;
-          }
-          if (newMinutes === 60) {
-            newMinutes = 0;
-            newHours++;
-          }
-          if (newHours === 24) {
-            newHours = 0;
-          }
-          setMinutes(newMinutes);
-          setHours(newHours);
-          return newSeconds;
-        });
-        if (seconds === 20) {
-          console.log("working");
-          dispatch(popupActions.togglePopup(false));
-          dispatch(popupforlogoutActions.togglePopup(true));
-        }
+        if (forward) {
+          setTotalSeconds((totalSeconds) => totalSeconds + 1);
 
-        if (seconds === 10) {
-          dispatch(
-            timeActions.settime({
-              hours: hours,
-              minutes: minutes,
-              seconds: seconds,
-            })
-          );
+          if (totalSeconds === 10) {
+            dispatch(
+              timeActions.settime({
+                minutes: minutesRemaining,
 
-          dispatch(popupActions.togglePopup(true));
+                seconds: secondsRemaining,
+              })
+            );
+
+            dispatch(popupActions.togglePopup(true));
+          }
+
+          if (totalSeconds === 20) {
+            dispatch(popupActions.togglePopup(false));
+
+            dispatch(popupforlogoutActions.togglePopup(true));
+          }
+        } else {
+          setTotalSeconds((totalSeconds) => totalSeconds - 1);
+
+          if (totalSeconds === 0) {
+            console.log("logout triggered");
+
+            dispatch(popupforlogoutActions.togglePopup(false));
+
+            dispatch(userActions.logout());
+          }
         }
       } else {
-        setHours(0);
-        setMinutes(0);
-        setSeconds(1);
-        count.current = 0;
+        setTotalSeconds(0);
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [seconds, props.onChange]);
+  });
 
-  return null;
-  /*(
-    <div className="clock">
-      <h1>Real-Time Clock</h1>
-      <p>
-        {hours < 10 ? "0" : ""}
-        {hours}:{minutes < 10 ? "0" : ""}
-        {minutes}:{seconds < 10 ? "0" : ""}
-        {seconds}
-      </p>
+  return forward ? null : (
+    <div>
+      <p>If you didnt respond You will be loggedout in</p>
+
+      <h1>
+        {minutesRemaining}m {secondsRemaining}s
+      </h1>
     </div>
-  );*/
+  );
 }
+
 export default Clock;

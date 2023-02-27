@@ -4,7 +4,6 @@ import { selectUser, userActions } from "../store/store";
 import { useSelector } from "react-redux";
 import "./logout.css";
 import Clock from "./Clock";
-import Timer from "./Timer";
 
 export const Logout = () => {
   const user = useSelector(selectUser);
@@ -39,7 +38,7 @@ export const Logout = () => {
       <h1>
         your mail is <span className="user_name">{user.email}</span>
       </h1>
-      <Clock onChange={isUserInteracting}/>
+      <Clock onChange={isUserInteracting} forward={true}/>
       <button onClick={LogoutHandler}>Logout</button>
     </div>
   );
